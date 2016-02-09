@@ -1,5 +1,4 @@
 
-
 function multi(first){
 	return function(second){
 		return $('#'+first).find('#'+second);	
@@ -15,16 +14,12 @@ function multiIf( first ){
 	}
 }
 
-
-
 var snakeBody=[];
-
-
 
 
 function makeFood(){
 	var fruitID = Math.floor(Math.random()*1600)+1;
-	 multi('grid')(fruitID).addClass('fruit')
+	 multi('grid')(fruitID).addClass('food')
 }
 
 var currentMove = '';
@@ -64,9 +59,9 @@ function move(direction){
 
 		//if snake's nextposition hasClass fruit. 
 		//remove the fruit and make new food
-		if( multiIf(nextPosition)('fruit')('hasClass') ){
+		if( multiIf(nextPosition)('food')('hasClass') ){
 			tail = snakeBody[0];
-			$("#"+nextPosition).removeClass('fruit');
+			$("#"+nextPosition).removeClass('food');
 			makeFood();	 
 		}
 
@@ -95,17 +90,8 @@ function move(direction){
 			currentMove='';
 		}
 
-		
-		
-
 	};
 	
-
-
-
-
-
-
 
 $(document).ready(function(){
 	
@@ -114,16 +100,16 @@ $(document).ready(function(){
 	var square = $("<div></div>").css("float","left");
 
 	for(var i = 0; i < 60; i++) {
-	    for (var j = 0; j < 60; j++){
+	    for (var j = 0; j < 100; j++){
 	        $("<div class='square' id="+(j+1+count)+"></div>").appendTo(square);
 	    }
-	    count+=40;
+	    count+= 60;
 	    $("<div id="+(i+1)+"></div>").css("clear", "both").appendTo(square);
 	}
 
 	square.appendTo($("#grid"));
 
-	//then make the food appear on the board. have to be this order
+	//then make the food appear on the board. 
 	makeFood();
 
 	// draw the snake; then draw the head
@@ -148,14 +134,14 @@ $(document).ready(function(){
 
 	//get input from user by the keyboards such as up, down, left and right directionection
 	$(document).keydown(function(e) {
-		
-	if (e.which === 39) {
+		console.log('event is ', e)
+	if (e.keyCode === 39) {
 	    currentMove = 'right';
-	  } else if (e.which === 37) {
+	  } else if (e.keyCode === 37) {
 	    currentMove = 'left';
-	  } else if (e.which === 38) {
+	  } else if (e.keyCode === 38) {
 	    currentMove = 'up';
-	  } else if (e.which === 40) {
+	  } else if (e.keyCode === 40) {
 	    currentMove = 'down';
 	  }
 	});
