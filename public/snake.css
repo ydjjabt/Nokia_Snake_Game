@@ -1,23 +1,21 @@
-.box {
+.square {
+    
     float:left;
     width:10px;
     height:10px;
     margin-right:3px;
     margin-bottom:3px;
-    background-color:#F7F7F7;
-}
-
-#content {
-    text-align: center;
-}
-
-.snake {
-    background-color:blue;
-}
-.snakeHead{
-    background-color:red;
+    background-color: #eaa32f;
 }
 
 .fruit {
-    background-color:cyan;
+    background-color: teal;
 }
+
+.body {
+    background-color:blue;
+}
+.head{
+    background-color:  #b337F7;
+}
+

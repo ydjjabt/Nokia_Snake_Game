@@ -1,26 +1,8 @@
 
-SNAKE=[];
-
-function drawGrid(x,y){
-	var count=0;
-	var $container = $("<div></div>").css("float","left");
-
-	for(var i = 0; i < x; i++) {
-	    for (var j = 0; j < y; j++){
-	        $("<div id="+(j+1+count)+"></div>").addClass("box").appendTo($container);
-	    }
-	    count+=40;
-	    $("<div id="+(i+1)+"></div>").css("clear", "both").appendTo($container);
-	}
-
-	$container.appendTo($("#content"));
-}
 
 function multi(first){
 	return function(second){
-		
-			return $('#'+first).find('#'+second);
-		
+		return $('#'+first).find('#'+second);	
 	}
 }
 
@@ -29,115 +11,153 @@ function multiIf( first ){
 	return function(second){
 		return function(third){
 		return $("#"+first)[third](second);
-	}
+		}
 	}
 }
 
-function initialSnake(){
 
-	var root = multi('content');
-	root(550).addClass('snakeHead');
-	root(549).addClass('snake');
-	root(548).addClass('snake');
-	SNAKE.push(548, 549, 550);
-	
 
-}
+var snakeBody=[];
+
+
 
 
 function makeFood(){
 	var fruitID = Math.floor(Math.random()*1600)+1;
-	$("#content").find("#"+fruitID).addClass('fruit');
+	 multi('grid')(fruitID).addClass('fruit')
 }
 
-function snakeDirection(){
-	var currentMove = '';
+var currentMove = '';
 
-	setInterval(function() {
-	  if (currentMove !== '') {
-	    move(currentMove);
-	  }
-	}, 100);
-
-	$(document).keydown(function(event) {
-	  if (event.which === 39) {
-	    currentMove = 'r';
-	  } else if (event.which === 37) {
-	    currentMove = 'l';
-	  } else if (event.which === 38) {
-	    currentMove = 'u';
-	  } else if (event.which === 40) {
-	    currentMove = 'd';
-	  }
-	});
-	var move = function(dir){
-		var currentID = SNAKE[SNAKE.length-1];
-		var nextID;
+function move(direction){
+		var currentPosition = snakeBody[snakeBody.length-1];
 		
-		if( dir === 'r'){
-			 nextID = currentID+1;
+		if( direction === 'right'){
+			var nextPosition = currentPosition+1;
 		}
-		else if( dir === 'l'){
-			 nextID = currentID-1;
+		else if( direction === 'left'){
+			 nextPosition = currentPosition-1;
 		}
-		else if( dir === 'u'){
-			 nextID = currentID - 40;
+		else if( direction === 'up'){
+			 nextPosition = currentPosition - 40;
 		}
-		else if( dir === 'd'){
-			 nextID = currentID + 40;
+		else if( direction === 'down'){
+			 nextPosition = currentPosition + 40;
 		}
 
 		var tail = 0;
-		if( multiIf(nextID)('fruit')('hasClass') ){
-			tail = SNAKE[0];
-			$("#"+nextID).removeClass('fruit');
+
+		//removing the snake from the board  to allow movement
+		for (var i=0;i<snakeBody.length;i++){
+			multiIf( snakeBody[i] )('body')('removeClass')
+			snakeBody[i]=snakeBody[i+1];
+		}
+		
+
+		// then making the snake appear on the screen to allow movement.
+		for (var i=0; i<snakeBody.length; i++){
+			multiIf( snakeBody[i] )('body')('addClass')
+		}
+		snakeBody[snakeBody.length-1] = nextPosition;
+		$("#"+nextPosition).addClass('head');
+		$("#"+currentPosition).removeClass('head');	
+
+		//if snake's nextposition hasClass fruit. 
+		//remove the fruit and make new food
+		if( multiIf(nextPosition)('fruit')('hasClass') ){
+			tail = snakeBody[0];
+			$("#"+nextPosition).removeClass('fruit');
 			makeFood();	 
 		}
 
-		if( multiIf(nextID)('snake')('hasClass') ){
-			alert('Game over!');
-			for (var i=0;i<=SNAKE.length;i++){
-				$("#"+SNAKE[i]).removeClass('snake');
+		// if snake's nexposition hasClass body.
+		// you kill yourself!!!
+		if( multiIf(nextPosition)('body')('hasClass') ){
+			alert('Your Snake Die!!! Click Refresh to Play Again');
+			//this clear the css from the board screen.
+			for (var i=0;i<=snakeBody.length;i++){
+				$("#"+snakeBody[i]).removeClass('body');
 
 			}
-			SNAKE=[];
-			currentMove='';
-		}
-		if( !( multiIf(nextID)('box')('hasClass') ) ){
-			alert('Game over!');
-			for (var i=0;i<=SNAKE.length;i++){
-				//remove snake from [i]
-				$("#"+SNAKE[i]).removeClass('snake');
-
-			}
-			SNAKE=[];
+			//reset snakeBody to empty and current move to empty string
+			snakeBody=[];
 			currentMove='';
 		}
 
-		for (var i=0;i<SNAKE.length;i++){
-			$("#"+SNAKE[i]).removeClass('snake');
-			SNAKE[i]=SNAKE[i+1];
-		}
-		if (tail !== 0){
-			SNAKE.unshift(tail);
+		//if snake hit the top ceiling or bottom ceiling, game over
+		if( !( multiIf(nextPosition)('square')('hasClass') ) ){
+			alert('Your Snake Die! Click Refresh to Play Again');
+			for (var i=0;i<=snakeBody.length;i++){
+				$("#"+snakeBody[i]).removeClass('body');
+
+			}
+			snakeBody=[];
+			currentMove='';
 		}
 
-		for (var i=0; i<SNAKE.length; i++){
-			$("#"+SNAKE[i]).addClass('snake');
-		}
-		SNAKE[SNAKE.length-1] = nextID;
-		$("#"+nextID).addClass('snakeHead');
-		$("#"+currentID).removeClass('snakeHead');	
+		
+		
 
 	};
 	
-}
+
+
+
+
 
 
 
 $(document).ready(function(){
-	drawGrid(40,40);
-	initialSnake();
+	
+	// draw the grid board
+	var count=0;
+	var square = $("<div></div>").css("float","left");
+
+	for(var i = 0; i < 60; i++) {
+	    for (var j = 0; j < 60; j++){
+	        $("<div class='square' id="+(j+1+count)+"></div>").appendTo(square);
+	    }
+	    count+=40;
+	    $("<div id="+(i+1)+"></div>").css("clear", "both").appendTo(square);
+	}
+
+	square.appendTo($("#grid"));
+
+	//then make the food appear on the board. have to be this order
 	makeFood();
-	snakeDirection();
+
+	// draw the snake; then draw the head
+	var root = multi('grid');
+	root(550).addClass('head');
+
+	//loop to make long body 
+	for( var i = 545; i <= 549; i++ ){
+		root(i).addClass('body');
+		snakeBody.push(i)
+	}
+	// push the snake head into the snakeBody array
+	snakeBody.push(550);
+	
+	
+	//move the snake and repeat by using setInterval
+	setInterval(function() {
+	  if (currentMove !== '') {
+	    move(currentMove);
+	  }
+	}, 200);
+
+	//get input from user by the keyboards such as up, down, left and right directionection
+	$(document).keydown(function(e) {
+		
+	if (e.which === 39) {
+	    currentMove = 'right';
+	  } else if (e.which === 37) {
+	    currentMove = 'left';
+	  } else if (e.which === 38) {
+	    currentMove = 'up';
+	  } else if (e.which === 40) {
+	    currentMove = 'down';
+	  }
+	});
+	
 });
