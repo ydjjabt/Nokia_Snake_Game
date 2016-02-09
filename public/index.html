@@ -1,47 +1,16 @@
-
-
-<!DOCTYPE html>
 <html>
 <head>
-<title>Page Title</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="snake.css">
+<script src="snake.js"></script>
+
 </head>
-<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.min.js'></script>
 <body>
 
-<form class='studentName' id='nameForm'>
-  Enter Student Name: <input type="text" name="name" class='student'><br>
-  
-  <input type="submit" value="Submit" >
-</form>
-<br>
-<div id='enteredName'></div>
+<div id="container">
 
-ß
+	<div id="content"></div>
+</div>
+
 </body>
-<script >
-var ar =[];
-$( document ).ready(function() {
-
-var index = 1;
-$('.studentName').on('submit',function(e){
-	
-	e.preventDefault();
-	var temp = $('.student').val();
-	ar.push(temp);
-	var $tweet = $('<div> </div>');
-    $tweet.html(index + ' ' + temp);
-    $tweet.prependTo($('#enteredName')); 
-	index += 1;
-	var formReset = document.getElementById('nameForm')
-	formReset.reset();
-})
-
-
-
-});
-
-
-
-
-</script>
 </html>
